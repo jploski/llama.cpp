@@ -4219,6 +4219,36 @@ static struct ggml_cgraph * llm_build_mpt(
             attn_norm = ggml_norm(ctx0, inpL, norm_eps);
             offload_func(attn_norm);
 
+//    if (!ggml_allocr_is_measure(lctx.alloc) /*&& !warmup && n_tokens + kv_head == 2*/) {
+//printf("import torch\n");
+//printf("tensor = ");
+//ggml_build_forward_expand(gf, attn_norm);
+//ggml_allocr_alloc_graph(lctx.alloc, gf);
+//
+//#ifdef GGML_USE_CUBLAS
+//    for (int i = 0; i < gf->n_leafs; i++) {
+//        ggml_tensor * node = gf->leafs[i];
+//        if (node->backend == GGML_BACKEND_GPU && node->extra == NULL) {
+//            ggml_cuda_assign_scratch_offset(node, (char*)node->data - (char *) lctx.buf_alloc.data);
+//            ggml_cuda_copy_to_device(node);
+//        }
+//    }
+//
+//    for (int i = 0; i < gf->n_nodes; i++) {
+//        ggml_tensor * node = gf->nodes[i];
+//        if (node->backend == GGML_BACKEND_GPU && node->extra == NULL) {
+//            ggml_cuda_assign_scratch_offset(node, (char*)node->data - (char *) lctx.buf_alloc.data);
+//        }
+//    }
+//
+//    ggml_cuda_set_mul_mat_q(cparams.mul_mat_q);
+//#endif
+//
+//ggml_graph_compute_helper(lctx.work_buffer, gf, 1);
+//ggml_print_torch_tensor_f32(attn_norm, 0);
+//exit(0);
+//}
+
             attn_norm = ggml_mul(ctx0, attn_norm, model.layers[il].attn_norm);
             offload_func(attn_norm);
 
