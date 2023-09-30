@@ -4327,6 +4327,36 @@ bool ggml_is_numa(void) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void ggml_print_torch_tensor_f32(const struct ggml_tensor *tensor, const int64_t nelements) {
+    assert(tensor->type == GGML_TYPE_F32);
+
+    int64_t ne3 = tensor->ne[3];
+    int64_t ne2 = tensor->ne[2];
+    int64_t ne1 = tensor->ne[1];
+    int64_t ne0 = tensor->ne[0];
+
+    const int64_t n3 = tensor->nb[3] / ggml_element_size(tensor);
+    const int64_t n2 = tensor->nb[2] / ggml_element_size(tensor);
+    const int64_t n1 = tensor->nb[1] / ggml_element_size(tensor);
+    const int64_t n0 = tensor->nb[0] / ggml_element_size(tensor);
+
+    GGML_PRINT("torch.as_strided(torch.tensor([\n");
+    GGML_PRINT("    ");
+
+    const int64_t num_elements =
+        nelements == 0 ? ne3 * ne2 * ne1 * ne0 : nelements;
+
+    for (int64_t i = 0; i < num_elements; i++) {
+        GGML_PRINT("%.4e", (double)((float *) tensor->data)[i]);
+        if (i < num_elements-1) GGML_PRINT(",");
+        else GGML_PRINT("]\n");
+    }
+    GGML_PRINT("    ), (%ld, %ld, %ld, %ld), (%ld, %ld, %ld, %ld))\n",
+        ne3, ne2, ne1, ne0,
+        n3,  n2,  n1,  n0);
+
+}
+
 void ggml_print_object(const struct ggml_object * obj) {
     GGML_PRINT(" - ggml_object: type = %d, offset = %zu, size = %zu, next = %p\n",
             obj->type, obj->offs, obj->size, (const void *) obj->next);

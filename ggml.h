@@ -614,6 +614,7 @@ extern "C" {
 
     GGML_API void    ggml_print_object (const struct ggml_object * obj);
     GGML_API void    ggml_print_objects(const struct ggml_context * ctx);
+    GGML_API void    ggml_print_torch_tensor_f32(const struct ggml_tensor *tensor, const int64_t nelements);
 
     GGML_API int64_t ggml_nelements   (const struct ggml_tensor * tensor);
     GGML_API int64_t ggml_nrows       (const struct ggml_tensor * tensor);
